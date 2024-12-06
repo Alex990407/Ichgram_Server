@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3003" # Пробрасываем порт
+    volumes:
+      - .:/app # Монтируем исходный код для разработки
+      - /app/node_modules # Исключаем node_modules из локального монтирования
+    environment:
+      MONGO_URL: mongodb://db:27018/mydatabase # URL для подключения к MongoDB
+    depends_on:
+      - db # Указываем зависимость от MongoDB
+
+  db:
+    image: mongo:6.0 # Используем официальное изображение MongoDB
+    ports:
+      - "27018:27017" # Пробрасываем порт для MongoDB
+    volumes:
+      - mongodb_data:/data/db # Храним данные на хостовой системе
+
+volumes:
+  mongodb_data:
