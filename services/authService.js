@@ -4,26 +4,44 @@ const User = require("../models/User");
 
 // Регистрация нового пользователя
 exports.register = async (data) => {
-  const { username, email, password, fullname } = data;
+  console.log(data);
+  try {
+    const { username, email, password, fullName } = data;
 
-  // Проверяем, существует ли пользователь с таким email или username
-  const existingUser = await User.findOne({ $or: [{ email }, { username }] });
-  if (existingUser) {
-    throw new Error("User with this email or username already exists.");
+    console.log("Received data:", { username, email, fullName });
+
+    // Проверяем, существует ли пользователь с таким email или username
+    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    if (existingUser) {
+      console.error("User already exists with email or username:", {
+        email,
+        username,
+      });
+      throw new Error("User with this email or username already exists.");
+    }
+
+    console.log("No existing user found, proceeding to create a new one.");
+
+    // Хэшируем пароль
+    const hashedPassword = await bcrypt.hash(password, 10);
+    console.log("Password hashed successfully.");
+
+    // Создаём нового пользователя
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      fullname: fullName,
+    });
+
+    const savedUser = await newUser.save();
+    console.log("New user created successfully:", savedUser);
+
+    return savedUser;
+  } catch (err) {
+    console.error("Error during registration:", err.message);
+    throw err; // Передаем ошибку дальше для обработки на уровне контроллера
   }
-
-  // Хэшируем пароль
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  // Создаём нового пользователя
-  const newUser = new User({
-    username,
-    email,
-    password: hashedPassword,
-    fullname,
-  });
-
-  return await newUser.save();
 };
 
 // Авторизация пользователя

@@ -1,12 +1,27 @@
 const express = require("express");
+const mongoose = require("mongoose");
+const routes = require("./routes");
+const cors = require("cors"); // Импортируем CORS
 require("dotenv").config();
-const routes = require("./routes"); // Подключаем маршруты
 
 const app = express();
 
-app.use(express.json()); // Для обработки JSON запросов
+// Включаем CORS
+app.use(cors());
 
-// Используем маршруты
+// Обработка JSON
+app.use(express.json());
+
+// Подключение маршрутов
 app.use("/api", routes);
+
+// Подключение к базе данных
+mongoose
+  .connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 module.exports = app;
