@@ -12,6 +12,7 @@ exports.register = async (req, res) => {
 
 // Авторизация
 exports.login = async (req, res) => {
+  console.log(req.body);
   try {
     const { token, user } = await authService.login(req.body);
     res.status(200).json({ message: "Login successful", token, user });
