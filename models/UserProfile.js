@@ -5,6 +5,7 @@ const userProfileSchema = new mongoose.Schema({
   username: { type: String, required: true },
   description: { type: String },
   avatarUrl: { type: String },
+  website: { type: String },
   followers: { type: Number, default: 0 },
   following: { type: Number, default: 0 },
 });
