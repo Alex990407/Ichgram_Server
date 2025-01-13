@@ -6,7 +6,17 @@ exports.register = async (req, res) => {
     const user = await authService.register(req.body);
     res.status(201).json({ message: "User registered successfully", user });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error(error.message);
+
+    // Если пользователь уже существует
+    if (error.message === "User with this email or username already exists.") {
+      return res
+        .status(409) // Меняем статус на 409 Conflict
+        .json({ message: error.message });
+    }
+
+    // Другие ошибки
+    res.status(500).json({ message: error.message || "Registration failed." });
   }
 };
 
