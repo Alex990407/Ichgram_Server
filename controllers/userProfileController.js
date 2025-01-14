@@ -89,10 +89,32 @@ const getProfile = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch profile" });
   }
 };
+const uploadAvatar = async (req, res) => {
+  const userId = req.user.id;
+
+  if (!req.file) {
+    return res.status(400).json({ error: "No file uploaded." });
+  }
+
+  const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+
+  try {
+    // Обновляем профиль пользователя с новым URL аватара
+    const updatedProfile = await userProfileService.upsertUserProfile(userId, {
+      avatarUrl,
+    });
+
+    res.status(200).json(updatedProfile);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to upload avatar" });
+  }
+};
 
 module.exports = {
   createProfile,
   upsertProfile,
   deleteProfile,
   getProfile,
+  uploadAvatar,
 };
