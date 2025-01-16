@@ -16,6 +16,9 @@ router.delete("/", authenticate, userProfileController.deleteProfile);
 // Получить профиль
 router.get("/", authenticate, userProfileController.getProfile);
 
+// Новый маршрут для получения аватара
+router.get("/avatar", authenticate, userProfileController.getAvatar);
+
 router.post(
   "/avatar",
   authenticate,

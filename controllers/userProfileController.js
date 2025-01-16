@@ -111,10 +111,28 @@ const uploadAvatar = async (req, res) => {
   }
 };
 
+const getAvatar = async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const profile = await userProfileService.getUserAvatar(userId);
+
+    if (!profile || !profile.avatarUrl) {
+      return res.status(404).json({ error: "Avatar not found" });
+    }
+
+    res.status(200).json({ avatarUrl: profile.avatarUrl });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch avatar" });
+  }
+};
+
 module.exports = {
   createProfile,
   upsertProfile,
   deleteProfile,
   getProfile,
   uploadAvatar,
+  getAvatar, // Экспортируем новый метод
 };
