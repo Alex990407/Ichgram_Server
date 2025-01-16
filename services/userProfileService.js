@@ -27,6 +27,8 @@ const getUserProfile = async (userId) => {
 
 // Получить аватар пользователя
 const getUserAvatar = async (userId) => {
+  console.log('userId', userId);
+  
   const profile = await UserProfile.findOne(
     { userId },
     { avatarUrl: 1, _id: 0 }
