@@ -31,7 +31,7 @@ exports.createPost = async (req, res) => {
 
     const newPost = new Post({
       userId: req.user.id,
-      imageUrl: `/uploads/${req.file.filename}`,
+      imageUrl: `/uploads/avatars/${req.file.filename}`,
       title: title || "",
     });
 
