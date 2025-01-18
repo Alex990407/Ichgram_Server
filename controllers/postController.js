@@ -150,4 +150,16 @@ exports.getPostById = async (req, res) => {
     console.error("Error fetching post:", error);
     res.status(500).json({ error: "Failed to fetch post" });
   }
+
+  // Получить все посты конкретного пользователя
+  exports.getUserPosts = async (req, res) => {
+    const { userId } = req.params;
+    try {
+      const posts = await Post.find({ userId }).sort({ createdAt: -1 }); // Найти посты по userId
+      res.status(200).json(posts);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Failed to fetch user posts" });
+    }
+  };
 };

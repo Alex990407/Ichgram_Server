@@ -33,4 +33,7 @@ router.post("/:postId/like", authenticate, likePost);
 // Эндпоинт для получения данных конкретного поста (публичный)
 router.get("/:postId", getPostById);
 
+// Получить все посты пользователя
+router.get("/user/:userId", authenticate, postController.getUserPosts);
+
 module.exports = router;
