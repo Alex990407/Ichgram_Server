@@ -15,6 +15,13 @@ const upsertUserProfile = async (userId, updates) => {
   );
 };
 
+const getUserProfileById = async (userId) => {
+  return await UserProfile.findOne({ userId }).populate(
+    "userId",
+    "email username"
+  );
+};
+
 // Удалить профиль
 const deleteUserProfile = async (userId) => {
   return await UserProfile.findOneAndDelete({ userId });
@@ -22,13 +29,17 @@ const deleteUserProfile = async (userId) => {
 
 // Получить профиль
 const getUserProfile = async (userId) => {
-  return await UserProfile.findOne({ userId }).populate("userId", "email"); // Пополняем данные пользователя, если нужно
+  console.log("getUserProfile", userId);
+  const profile = await UserProfile.findById(userId).populate(
+    "userId",
+    "email"
+  );
+  console.log(profile);
+  return profile;
 };
 
 // Получить аватар пользователя
 const getUserAvatar = async (userId) => {
-  console.log('userId', userId);
-  
   const profile = await UserProfile.findOne(
     { userId },
     { avatarUrl: 1, _id: 0 }
@@ -41,5 +52,6 @@ module.exports = {
   upsertUserProfile,
   deleteUserProfile,
   getUserProfile,
-  getUserAvatar, // Добавляем метод для получения аватара
+  getUserProfileById,
+  getUserAvatar,
 };

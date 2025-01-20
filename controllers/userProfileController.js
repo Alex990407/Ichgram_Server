@@ -113,12 +113,49 @@ const uploadAvatar = async (req, res) => {
 
 const getAvatar = async (req, res) => {
   const userId = req.user.id;
+  console.log("TESt1", userId);
 
   try {
-    res.status(200).json({ avatarUrl: await userProfileService.getUserAvatar(userId) });
+    res
+      .status(200)
+      .json({ avatarUrl: await userProfileService.getUserAvatar(userId) });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to fetch avatar" });
+  }
+};
+
+const getProfileById = async (req, res) => {
+  const { userId } = req.params; // Получаем ID пользователя из параметров маршрута
+
+  try {
+    const profile = await userProfileService.getUserProfile(userId);
+
+    if (!profile) {
+      return res.status(404).json({ error: "Profile not found" });
+    }
+
+    res.status(200).json(profile);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch profile by ID" });
+  }
+};
+
+const getAvatarByUserId = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const avatarUrl = await userProfileService.getUserAvatar(userId);
+
+    if (!avatarUrl) {
+      return res.status(404).json({ error: "Avatr not found" });
+    }
+
+    res.status(200).json(avatarUrl);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch profile by ID" });
   }
 };
 
@@ -128,5 +165,7 @@ module.exports = {
   deleteProfile,
   getProfile,
   uploadAvatar,
+  getAvatarByUserId,
+  getProfileById,
   getAvatar, // Экспортируем новый метод
 };
