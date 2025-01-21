@@ -29,12 +29,10 @@ const deleteUserProfile = async (userId) => {
 
 // Получить профиль
 const getUserProfile = async (userId) => {
-  console.log("getUserProfile", userId);
-  const profile = await UserProfile.findById(userId).populate(
+  const profile = await UserProfile.findOne({ userId: userId }).populate(
     "userId",
     "email"
   );
-  console.log(profile);
   return profile;
 };
 

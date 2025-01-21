@@ -67,6 +67,8 @@ const deleteProfile = async (req, res) => {
 const getProfile = async (req, res) => {
   const userId = req.user.id;
 
+  console.log('getProfile', userId);
+
   try {
     const profile = await userProfileService.getUserProfile(userId);
 
