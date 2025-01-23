@@ -34,7 +34,7 @@ class CommentController {
     try {
       const { commentId } = req.params;
       const { commentText } = req.body;
-      const userId = req.user._id;
+      const userId = req.user.id;
       const updatedComment = await commentService.updateComment(
         commentId,
         userId,
@@ -50,7 +50,7 @@ class CommentController {
   async deleteComment(req, res) {
     try {
       const { commentId } = req.params;
-      const userId = req.user._id;
+      const userId = req.user.id;
       await commentService.deleteComment(commentId, userId);
       res.status(200).json({ message: "Comment deleted successfully" });
     } catch (error) {
