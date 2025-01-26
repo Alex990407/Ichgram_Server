@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
+const UserProfile = require("../models/UserProfile");
 
 // Регистрация нового пользователя
 exports.register = async (data) => {
@@ -34,10 +35,26 @@ exports.register = async (data) => {
       fullname: fullName,
     });
 
+    // Сохраняем пользователя в базе данных
     const savedUser = await newUser.save();
     console.log("New user created successfully:", savedUser);
 
-    return savedUser;
+    // Создаём профиль пользователя
+    const newUserProfile = new UserProfile({
+      userId: savedUser._id, // Привязка к только что созданному пользователю
+      username: savedUser.username, // Имя пользователя
+      description: "", // Пустое описание
+      avatarUrl: "", // Пустая ссылка на аватар
+      website: "", // Пустая ссылка на вебсайт
+      followers: 0,
+      following: 0,
+    });
+
+    // Сохраняем профиль в базе данных
+    const savedUserProfile = await newUserProfile.save();
+    console.log("User profile created successfully:", savedUserProfile);
+
+    return savedUser; // Возвращаем только информацию о пользователе
   } catch (err) {
     console.error("Error during registration:", err.message);
     throw err; // Передаем ошибку дальше для обработки на уровне контроллера

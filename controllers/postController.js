@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const postService = require("../services/postService");
 
 exports.getExplorePosts = async (req, res) => {
@@ -61,10 +62,27 @@ exports.deletePost = async (req, res) => {
 exports.likePost = async (req, res) => {
   try {
     const { postId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return res.status(400).json({ error: "Invalid Post ID" });
+    }
+
+    console.log("like!");
+
     const post = await postService.likePost(postId, req.user.id);
-    res.status(200).json({ message: "Post liked successfully", post });
+
+    console.log(post.likes);
+    res.status(200).json({
+      message: post.likes.includes(req.user.id)
+        ? "Post liked successfully"
+        : "Post unliked successfully",
+      post,
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    if (error.message === "Post not found") {
+      return res.status(404).json({ error: "Post not found" });
+    }
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 

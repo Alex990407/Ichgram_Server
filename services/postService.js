@@ -1,5 +1,29 @@
 const Post = require("../models/Post");
 const UserProfile = require("../models/UserProfile");
+const mongoose = require("mongoose");
+
+// Лайкнуть пост
+exports.likePost = async (postId, userId) => {
+  if (!mongoose.Types.ObjectId.isValid(postId)) {
+    throw new Error("Invalid Post ID");
+  }
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    throw new Error("Invalid User ID");
+  }
+
+  const post = await Post.findById(postId);
+  if (!post) {
+    throw new Error("Post not found");
+  }
+
+  if (post.likes.includes(userId)) {
+    await Post.updateOne({ _id: postId }, { $pull: { likes: userId } });
+  } else {
+    await Post.updateOne({ _id: postId }, { $addToSet: { likes: userId } });
+  }
+
+  return await Post.findById(postId);
+};
 
 // Получить посты для Explore
 exports.getExplorePosts = async () => {
@@ -92,24 +116,6 @@ exports.deletePost = async (postId, userId) => {
   }
 
   await Post.findByIdAndDelete(postId);
-};
-
-// Лайкнуть пост
-exports.likePost = async (postId, userId) => {
-  const post = await Post.findById(postId);
-
-  if (!post) {
-    throw new Error("Post not found");
-  }
-
-  if (post.likes.includes(userId)) {
-    throw new Error("You already liked this post");
-  }
-
-  post.likes.push(userId);
-  await post.save();
-
-  return post;
 };
 
 // Получить пост по ID
