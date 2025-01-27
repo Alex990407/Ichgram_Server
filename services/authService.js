@@ -48,8 +48,6 @@ exports.register = async (data) => {
 exports.login = async (data) => {
   const { email, password } = data;
 
-  console.log("It is a Service");
-  console.log(email);
   // Проверяем наличие пользователя
   const user = await User.findOne({ email });
   if (!user) {
@@ -62,7 +60,6 @@ exports.login = async (data) => {
     throw new Error("Invalid email or password.");
   }
 
-  console.log("->>>>>Alex");
   // Генерируем JWT токен
   const token = jwt.sign(
     { id: user._id, email: user.email },
@@ -70,7 +67,6 @@ exports.login = async (data) => {
     { expiresIn: "1h" } // Токен будет действителен 1 час
   );
 
-  console.log("->>>>>odessa");
   return { token, user };
 };
 

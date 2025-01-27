@@ -29,7 +29,6 @@ exports.createPost = async (req, res) => {
 exports.getAllPosts = async (req, res) => {
   try {
     const posts = await postService.getAllPosts();
-    console.log(posts);
     res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch posts" });
@@ -39,9 +38,7 @@ exports.getAllPosts = async (req, res) => {
 exports.getUserPosts = async (req, res) => {
   try {
     const { userId } = req.params;
-    console.log("getUserPosts", userId);
     const data = await postService.getUserPosts(userId);
-    console.log("return", data);
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });

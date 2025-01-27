@@ -67,8 +67,6 @@ exports.getUserPosts = async (userId) => {
   const posts = await Post.find({ userId }).sort({ createdAt: -1 });
   const userProfile = await UserProfile.findOne({ userId });
 
-  console.log("posts", posts);
-
   if (!userProfile) {
     throw new Error("User profile not found");
   }
@@ -102,11 +100,18 @@ exports.likePost = async (postId, userId) => {
     throw new Error("Post not found");
   }
 
-  if (post.likes.includes(userId)) {
-    throw new Error("You already liked this post");
+  // Проверяем, есть ли лайк от этого пользователя
+  const likeIndex = post.likes.indexOf(userId);
+
+  if (likeIndex !== -1) {
+    // Убираем лайк, если пользователь уже лайкнул
+    post.likes.splice(likeIndex, 1);
+  } else {
+    // Добавляем лайк, если его нет
+    post.likes.push(userId);
   }
 
-  post.likes.push(userId);
+  // Сохраняем обновленный пост
   await post.save();
 
   return post;

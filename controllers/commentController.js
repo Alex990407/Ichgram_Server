@@ -3,7 +3,6 @@ const commentService = require("../services/commentService");
 class CommentController {
   // Создание комментария
   async createComment(req, res) {
-    console.log('createComment');
     try {
       const { postId, commentText } = req.body;
       const userId = req.user.id; // ID пользователя из middleware

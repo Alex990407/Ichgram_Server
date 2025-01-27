@@ -1,4 +1,5 @@
 const UserProfile = require("../models/UserProfile");
+const User = require("../models/User");
 
 // Создать профиль
 const createUserProfile = async (userId, profileData) => {
@@ -45,6 +46,32 @@ const getUserAvatar = async (userId) => {
   return profile?.avatarUrl || null; // Если профиль не найден, возвращаем null
 };
 
+const getAllUsers = async () => {
+  try {
+    const users = await User.find({}, "username fullname email");
+    const profiles = await UserProfile.find({}, "avatarUrl description userId");
+
+    const combinedData = users.map((user) => {
+      const profile = profiles.find(
+        (profile) => profile.userId.toString() === user._id.toString()
+      );
+      return {
+        id: user._id,
+        username: user.username,
+        fullname: user.fullname,
+        email: user.email,
+        avatarUrl: profile?.avatarUrl || "",
+        description: profile?.description || "",
+      };
+    });
+
+    return combinedData;
+  } catch (err) {
+    console.error("Error fetching users:", err);
+    throw new Error("Failed to fetch users");
+  }
+};
+
 module.exports = {
   createUserProfile,
   upsertUserProfile,
@@ -52,4 +79,5 @@ module.exports = {
   getUserProfile,
   getUserProfileById,
   getUserAvatar,
+  getAllUsers
 };

@@ -1,5 +1,6 @@
 const userProfileService = require("../services/userProfileService");
 
+
 // Создать профиль
 const createProfile = async (req, res) => {
   const userId = req.user.id; // Идентификация пользователя из JWT
@@ -21,7 +22,6 @@ const upsertProfile = async (req, res) => {
   const userId = req.user.id; // Идентификация пользователя из JWT
   const updates = req.body;
 
-  console.log(updates);
   try {
     // Проверяем, существует ли профиль
     const existingProfile = await userProfileService.getUserProfile(userId);
@@ -161,6 +161,16 @@ const getAvatarByUserId = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await userProfileService.getAllUsers();
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error fetching all users:", error);
+    res.status(500).json({ error: "Failed to fetch users" });
+  }
+};
+
 module.exports = {
   createProfile,
   upsertProfile,
@@ -169,5 +179,6 @@ module.exports = {
   uploadAvatar,
   getAvatarByUserId,
   getProfileById,
-  getAvatar, // Экспортируем новый метод
+  getAvatar,
+  getAllUsers
 };

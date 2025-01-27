@@ -4,6 +4,9 @@ const userProfileController = require("../controllers/userProfileController");
 const authenticate = require("../middlewares/authMiddleware");
 const upload = require("../middlewares/uploadMiddleware");
 
+
+router.get("/all", authenticate, userProfileController.getAllUsers);
+
 // Новый маршрут для получения аватара
 router.get("/avatar", authenticate, userProfileController.getAvatar);
 
