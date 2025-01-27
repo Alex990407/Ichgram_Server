@@ -8,14 +8,10 @@ exports.register = async (req, res) => {
   } catch (error) {
     console.error(error.message);
 
-    // Если пользователь уже существует
     if (error.message === "User with this email or username already exists.") {
-      return res
-        .status(409) // Меняем статус на 409 Conflict
-        .json({ message: error.message });
+      return res.status(409).json({ message: error.message });
     }
 
-    // Другие ошибки
     res.status(500).json({ message: error.message || "Registration failed." });
   }
 };
